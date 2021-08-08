@@ -19,3 +19,22 @@ router
   .catch((err) => {
     res.json(err);
   });
+router.get("/api/workouts/range", (req, res) => {
+  Workout.aggregate([
+    {
+      $addFields: {
+        totalDuration: {
+          $sum: "$exercises.duration",
+        },
+      },
+    },
+  ])
+    .sort({ _id: -1 })
+    .limit(8)
+    .then((dbWorkouts) => {
+      res.json(dbWorkouts);
+    })
+    .catch((err) => {
+      res.json(err);
+    });
+});
